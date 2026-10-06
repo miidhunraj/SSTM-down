@@ -6,13 +6,6 @@ import winsound
 import ctypes
 from ctypes import wintypes
 
-# ============================================================
-# WINDOWS GLITCH / CRASH SIMULATOR
-# Safe simulation: does NOT shut down or restart Windows.
-# At the end it turns OFF ONLY the monitor/display.
-# Press ESC or CTRL+C to exit the simulation.
-# ============================================================
-
 root = tk.Tk()
 root.attributes("-fullscreen", True)
 root.attributes("-topmost", True)
@@ -30,10 +23,6 @@ canvas = tk.Canvas(
 )
 canvas.pack(fill="both", expand=True)
 
-# ------------------------------------------------------------
-# EXIT
-# ------------------------------------------------------------
-
 running = True
 
 def quit_app(event=None):
@@ -44,15 +33,9 @@ def quit_app(event=None):
 root.bind("<Escape>", quit_app)
 root.bind_all("<Control-c>", quit_app)
 
-# Keep the mouse from interacting with the fake crash screen.
 root.bind("<Button-1>", lambda e: "break")
 root.bind("<Button-2>", lambda e: "break")
 root.bind("<Button-3>", lambda e: "break")
-
-# ------------------------------------------------------------
-# SAFE WINDOWS DISPLAY OFF
-# Turns off ONLY the monitor. It does not shut down Windows.
-# ------------------------------------------------------------
 
 def turn_off_display():
     try:
@@ -70,11 +53,6 @@ def turn_off_display():
     except Exception:
         pass
 
-# ------------------------------------------------------------
-# WINDOWS-STYLE EXIT SOUND
-# Uses a built-in Windows system sound when available.
-# ------------------------------------------------------------
-
 def play_exit_sound():
     try:
         winsound.PlaySound(
@@ -87,9 +65,6 @@ def play_exit_sound():
         except Exception:
             pass
 
-# ------------------------------------------------------------
-# STATE
-# ------------------------------------------------------------
 
 progress = 0
 glitch_level = 0
@@ -110,10 +85,6 @@ stop_codes = [
     "MEMORY_MANAGEMENT",
     "KERNEL_SECURITY_CHECK_FAILURE",
 ]
-
-# ------------------------------------------------------------
-# DRAW HELPERS
-# ------------------------------------------------------------
 
 def glitch_bars(count=12):
     for _ in range(count):
@@ -136,10 +107,6 @@ def scanlines():
             fill="#000000",
             outline=""
         )
-
-# ------------------------------------------------------------
-# PHASE 1: DIAGNOSTIC
-# ------------------------------------------------------------
 
 def diagnostic():
     global progress
@@ -245,9 +212,6 @@ def diagnostic():
     else:
         root.after(random.randint(70, 140), diagnostic)
 
-# ------------------------------------------------------------
-# PHASE 2: REALISTIC-STYLE CRASH + GLITCH
-# ------------------------------------------------------------
 
 def crash_screen():
     global crash_frame
@@ -319,7 +283,7 @@ def crash_screen():
             font=("Consolas", 11)
         )
 
-    # QR-like diagnostic block
+
     size = 108
     x0 = W - 205
     y0 = H - 180
@@ -336,7 +300,7 @@ def crash_screen():
                     outline=""
                 )
 
-    # Increasing visual corruption
+
     if crash_frame > 22:
         for _ in range(min(30, 5 + crash_frame // 3)):
             glitch_bars(1)
@@ -344,7 +308,7 @@ def crash_screen():
     if crash_frame > 45:
         scanlines()
 
-    # Flicker / corruption near the end
+
     if crash_frame > 68 and random.random() > 0.35:
         canvas.create_rectangle(
             0, random.randint(0, H - 30),
@@ -359,10 +323,6 @@ def crash_screen():
         root.after(700, recovery_screen)
     else:
         root.after(random.randint(70, 150), crash_screen)
-
-# ------------------------------------------------------------
-# PHASE 3: GLITCHED RECOVERY
-# ------------------------------------------------------------
 
 def recovery_screen():
     global recovery_frame
@@ -428,10 +388,6 @@ def recovery_screen():
     else:
         root.after(90, recovery_screen)
 
-# ------------------------------------------------------------
-# PHASE 4: DISPLAY ONLY OFF
-# ------------------------------------------------------------
-
 def display_off():
     if not running:
         return
@@ -439,12 +395,8 @@ def display_off():
     canvas.delete("all")
     canvas.configure(bg="black")
 
-    # Give the sound a moment before the monitor goes dark.
-    root.after(350, turn_off_display)
 
-# ------------------------------------------------------------
-# START
-# ------------------------------------------------------------
+    root.after(350, turn_off_display)
 
 diagnostic()
 root.mainloop()
