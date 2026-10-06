@@ -1,4 +1,4 @@
-# Windows Glitch / Crash Simulator
+# Windows Crash Simulator
 
 A visual-only Windows crash/recovery simulation made with Python and Tkinter.
 
@@ -25,7 +25,7 @@ The final display-off action uses the Windows monitor-power message. The operati
 ## Run
 
 ```powershell
-python "windows_glitch_simulator.py"
+python "DontOpen.py"
 ```
 
 Windows only.
